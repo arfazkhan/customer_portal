@@ -1,0 +1,21 @@
+/* src/components/PhotoGrid.css */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3x3 grid */
+    gap: 15px; /* Space between grid items */
+    margin-top: 20px;
+    justify-content: center;
+  }
+  
+  .photo-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .photo-grid img:hover {
+    transform: scale(1.05);
+  }
+  
