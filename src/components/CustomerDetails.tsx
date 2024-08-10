@@ -13,15 +13,16 @@ interface Customer {
 interface Props {
   customer: Customer;
   photos: string[];
+  loading: boolean;
 }
 
-const CustomerDetails: React.FC<Props> = ({ customer, photos }) => {
+const CustomerDetails: React.FC<Props> = ({ customer, photos, loading }) => {
   return (
     <div className="customer-details">
       <h2>{customer.name}</h2>
       <p>Title: {customer.title}</p>
       <p>Address: {customer.address}</p>
-      <PhotoGrid photos={photos} />
+      <PhotoGrid photos={photos} loading={loading} />
     </div>
   );
 };

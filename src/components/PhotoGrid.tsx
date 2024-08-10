@@ -1,17 +1,27 @@
 // src/components/PhotoGrid.tsx
 import React from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import './PhotoGrid.css';
 
 interface Props {
   photos: string[];
+  loading: boolean;
 }
 
-const PhotoGrid: React.FC<Props> = ({ photos }) => {
+const PhotoGrid: React.FC<Props> = ({ photos, loading }) => {
   return (
     <div className="photo-grid">
-      {photos.map((photo, index) => (
-        <img key={index} src={photo} alt={`Photo ${index + 1}`} style={{width: '400px', height: '400px'}} />
-      ))}
+      {loading
+        ? Array(9).fill(0).map((_, index) => (
+            <div key={index} className="photo-skeleton">
+              <Skeleton height={400} width={400} />
+            </div>
+          ))
+        : photos.map((photo, index) => (
+            <img key={index} src={photo} alt={`Photo ${index + 1}`} style={{width: '400px', height: '400px'}} />
+          ))
+      }
     </div>
   );
 };

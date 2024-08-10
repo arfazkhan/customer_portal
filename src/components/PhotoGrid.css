@@ -1,12 +1,16 @@
 /* src/components/PhotoGrid.css */
 .photo-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3x3 grid */
-    gap: 15px; /* Space between grid items */
-    margin-top: 20px;
-    justify-content: center;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.photo-skeleton {
+  width: 400px;
+  height: 400px;
+}
   .photo-grid img {
     width: 100%;
     height: auto;

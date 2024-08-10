@@ -18,6 +18,7 @@ interface CustomerPhotos {
 const App: React.FC = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [customerPhotos, setCustomerPhotos] = useState<CustomerPhotos>({});
+  const [loading, setLoading] = useState<boolean>(true);
 
   const customers: Customer[] = [
     { id: 1, name: "John Doe", title: "CEO", address: "123 Main St" },
@@ -41,7 +42,22 @@ const App: React.FC = () => {
       setCustomerPhotos(prev => ({ ...prev, [customer.id]: photos }));
     }
   };
+ useEffect(() => {
+    const updatePhotos = async () => {
+      setLoading(true);
+      const newPhotos: CustomerPhotos = {};
+      for (const customer of customers) {
+        newPhotos[customer.id] = await fetchPhotosForCustomer(customer.id);
+      }
+      setCustomerPhotos(newPhotos);
+      setLoading(false);
+    };
 
+    updatePhotos();
+    const interval = setInterval(updatePhotos, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     if (selectedCustomer) {
       const interval = setInterval(async () => {
@@ -67,6 +83,7 @@ const App: React.FC = () => {
           <CustomerDetails 
             customer={selectedCustomer} 
             photos={customerPhotos[selectedCustomer.id] || []}
+            loading={loading}
           />
         )}
       </div>
