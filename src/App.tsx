@@ -1,30 +1,24 @@
 // src/App.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CustomerList from './components/CustomerList';
 import CustomerDetails from './components/CustomerDetails';
+import { Customer, generateCustomers } from './utils/customerGenerator';
 import './App.css';
-
-interface Customer {
-  id: number;
-  name: string;
-  title: string;
-  address: string;
-}
 
 interface CustomerPhotos {
   [customerId: number]: string[];
 }
 
 const App: React.FC = () => {
+  // Use useRef to store the customer list so it doesn't change on re-renders
+  const customersRef = useRef<Customer[]>([]);
+  if (customersRef.current.length === 0) {
+    customersRef.current = generateCustomers(20);
+  }
+
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [customerPhotos, setCustomerPhotos] = useState<CustomerPhotos>({});
   const [loading, setLoading] = useState<boolean>(true);
-
-  const customers: Customer[] = [
-    { id: 1, name: "John Doe", title: "CEO", address: "123 Main St" },
-    { id: 2, name: "Jane Smith", title: "CTO", address: "456 Elm St" },
-    // Add more customers here
-  ];
 
   const fetchPhotosForCustomer = async (customerId: number) => {
     const newPhotos: string[] = [];
@@ -35,18 +29,11 @@ const App: React.FC = () => {
     return newPhotos;
   };
 
-  const handleSelectCustomer = async (customer: Customer) => {
-    setSelectedCustomer(customer);
-    if (!customerPhotos[customer.id]) {
-      const photos = await fetchPhotosForCustomer(customer.id);
-      setCustomerPhotos(prev => ({ ...prev, [customer.id]: photos }));
-    }
-  };
- useEffect(() => {
+  useEffect(() => {
     const updatePhotos = async () => {
       setLoading(true);
       const newPhotos: CustomerPhotos = {};
-      for (const customer of customers) {
+      for (const customer of customersRef.current) {
         newPhotos[customer.id] = await fetchPhotosForCustomer(customer.id);
       }
       setCustomerPhotos(newPhotos);
@@ -57,24 +44,14 @@ const App: React.FC = () => {
     const interval = setInterval(updatePhotos, 10000);
 
     return () => clearInterval(interval);
-  }, []);
-  useEffect(() => {
-    if (selectedCustomer) {
-      const interval = setInterval(async () => {
-        const photos = await fetchPhotosForCustomer(selectedCustomer.id);
-        setCustomerPhotos(prev => ({ ...prev, [selectedCustomer.id]: photos }));
-      }, 10000);
-
-      return () => clearInterval(interval);
-    }
-  }, [selectedCustomer]);
+  }, []); // Empty dependency array
 
   return (
     <div className="App">
       <div className="customer-list-container">
         <CustomerList 
-          customers={customers} 
-          onSelectCustomer={handleSelectCustomer} 
+          customers={customersRef.current} 
+          onSelectCustomer={setSelectedCustomer} 
           selectedCustomerId={selectedCustomer?.id}
         />
       </div>
