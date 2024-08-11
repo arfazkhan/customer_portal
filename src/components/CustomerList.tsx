@@ -43,11 +43,12 @@ const CustomerList: React.FC<Props> = ({
   }, [customers, onSelectCustomer, selectedCustomerId, isItemLoaded]);
 
   return (
-    <div style={{ flex: 1 }}> {/* Add this wrapper */}
+    <div style={{ flex: 1 }}>
       <InfiniteLoader
         isItemLoaded={isItemLoaded}
         itemCount={itemCount}
         loadMoreItems={loadMoreItems}
+        threshold={10} // Start loading more items when user is 10 items away from the end
       >
         {({ onItemsRendered, ref }) => (
           <List

@@ -7,7 +7,8 @@ import { generateCustomers } from './utils/customerGenerator';
 import { usePhotos } from './hooks/usePhotos';
 import './App.css';
 
-const ITEMS_PER_PAGE = 20;
+const INITIAL_LOAD_COUNT = 10;
+const ITEMS_PER_LOAD = 20;
 
 const App: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -16,10 +17,15 @@ const App: React.FC = () => {
   const [photos, photosLoading, photosError] = usePhotos(selectedCustomer?.id ?? null);
   const [hasNextPage, setHasNextPage] = useState(true);
 
+  useEffect(() => {
+    // Load initial customers
+    setCustomers(generateCustomers(INITIAL_LOAD_COUNT));
+  }, []);
+
   const loadMoreItems = useCallback((startIndex: number, stopIndex: number) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
-        const newCustomers = generateCustomers(stopIndex - startIndex + 1);
+        const newCustomers = generateCustomers(ITEMS_PER_LOAD);
         setCustomers(prev => [...prev, ...newCustomers]);
         if (customers.length + newCustomers.length >= 1000) {
           setHasNextPage(false);
