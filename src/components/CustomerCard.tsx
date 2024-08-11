@@ -25,4 +25,4 @@ const CustomerCard: React.FC<Props> = ({ customer, isSelected, onClick }) => {
   );
 };
 
-export default CustomerCard;
+export default React.memo(CustomerCard);

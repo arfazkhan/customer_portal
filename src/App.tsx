@@ -10,7 +10,6 @@ interface CustomerPhotos {
 }
 
 const App: React.FC = () => {
-  // Use useRef to store the customer list so it doesn't change on re-renders
   const customersRef = useRef<Customer[]>([]);
   if (customersRef.current.length === 0) {
     customersRef.current = generateCustomers(20);
