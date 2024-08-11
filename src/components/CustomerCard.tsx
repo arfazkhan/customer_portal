@@ -1,7 +1,11 @@
 // src/components/CustomerCard.tsx
 import React from 'react';
-import { Customer } from '../types/Customer';
 import './CustomerList.css';
+interface Customer {
+  id: number;
+  name: string;
+  title: string;
+}
 
 interface Props {
   customer: Customer;
