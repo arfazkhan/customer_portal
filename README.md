@@ -1,6 +1,4 @@
-Certainly! Here's a comprehensive README.md for the optimized and developed web application:
 
-```markdown
 # Customer Details Portal
 
 A single-page React application that displays a customer details portal with efficient loading and rendering of large datasets.
