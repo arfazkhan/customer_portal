@@ -21,13 +21,13 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchPhotosForCustomer = async (customerId: number) => {
-    const newPhotos: string[] = [];
-    for (let i = 0; i < 9; i++) {
-      const response = await fetch(`https://picsum.photos/1080/1080?random=${customerId}-${i}-${Date.now()}`);
-      newPhotos.push(response.url);
-    }
-    return newPhotos;
+    const photoPromises = Array.from({ length: 9 }, (_, i) => 
+      fetch(`https://picsum.photos/1080/1080?random=${customerId}-${i}-${Date.now()}`)
+        .then(response => response.url)
+    );
+    return Promise.all(photoPromises);
   };
+  
 
   useEffect(() => {
     const updatePhotos = async () => {
