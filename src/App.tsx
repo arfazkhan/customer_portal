@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomerList from './components/CustomerList';
 import CustomerDetails from './components/CustomerDetails';
 import { Customer, generateCustomers } from './utils/customerGenerator';
@@ -9,51 +9,46 @@ interface CustomerPhotos {
   [customerId: number]: string[];
 }
 
+const usePhotos = (customerId: number | null): [string[], boolean] => {
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (customerId) {
+      const fetchPhotos = async () => {
+        try {
+          const photoPromises = Array.from({ length: 9 }, (_, i) => 
+            fetch(`https://picsum.photos/1080/1080?random=${customerId}-${i}-${Date.now()}`)
+              .then(response => response.url)
+          );
+          const newPhotos = await Promise.all(photoPromises);
+          setPhotos(newPhotos);
+        } catch (error) {
+          console.error("Failed to fetch photos", error);
+          setPhotos([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPhotos();
+      const interval = setInterval(fetchPhotos, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [customerId]);
+
+  return [photos, loading];
+};
+
 const App: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [customerPhotos, setCustomerPhotos] = useState<CustomerPhotos>({});
-  const [loading, setLoading] = useState<boolean>(true);
+  const [photos, photosLoading] = usePhotos(selectedCustomer?.id ?? null);
 
   useEffect(() => {
     if (customers.length === 0) {
       setCustomers(generateCustomers(20));
     }
   }, [customers]);
-
-  const fetchPhotosForCustomer = async (customerId: number) => {
-    try {
-      const photoPromises = Array.from({ length: 9 }, (_, i) => 
-        fetch(`https://picsum.photos/1080/1080?random=${customerId}-${i}-${Date.now()}`)
-          .then(response => response.url)
-      );
-      return Promise.all(photoPromises);
-    } catch (error) {
-      console.error("Failed to fetch photos", error);
-      return Array(9).fill('fallback-image-url');
-    }
-  };
-  
-  
-
-  useEffect(() => {
-    if (selectedCustomer) {
-      const updatePhotos = async () => {
-        setLoading(true);
-        const newPhotos = await fetchPhotosForCustomer(selectedCustomer.id);
-        setCustomerPhotos(prev => ({
-          ...prev,
-          [selectedCustomer.id]: newPhotos
-        }));
-        setLoading(false);
-      };
-  
-      updatePhotos();
-      const interval = setInterval(updatePhotos, 10000);
-      return () => clearInterval(interval);
-    }
-  }, [selectedCustomer]); 
-  
 
   return (
     <div className="App">
@@ -68,8 +63,8 @@ const App: React.FC = () => {
         {selectedCustomer && (
           <CustomerDetails 
             customer={selectedCustomer} 
-            photos={customerPhotos[selectedCustomer.id] || []}
-            loading={loading}
+            photos={photos}
+            loading={photosLoading}
           />
         )}
       </div>
