@@ -14,6 +14,8 @@ interface Props {
   customer: Customer;
   photos: string[];
   loading: boolean;
+  error: string | null;
+
 }
 
 const CustomerDetails: React.FC<Props> = ({ customer, photos, loading }) => {

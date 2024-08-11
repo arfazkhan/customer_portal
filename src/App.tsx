@@ -9,9 +9,10 @@ interface CustomerPhotos {
   [customerId: number]: string[];
 }
 
-const usePhotos = (customerId: number | null): [string[], boolean] => {
+const usePhotos = (customerId: number | null): [string[], boolean, string | null] => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (customerId) {
@@ -25,6 +26,7 @@ const usePhotos = (customerId: number | null): [string[], boolean] => {
           setPhotos(newPhotos);
         } catch (error) {
           console.error("Failed to fetch photos", error);
+          setError("Failed to fetch photos. Please try again.");
           setPhotos([]);
         } finally {
           setLoading(false);
@@ -36,13 +38,13 @@ const usePhotos = (customerId: number | null): [string[], boolean] => {
     }
   }, [customerId]);
 
-  return [photos, loading];
+  return [photos, loading, error];
 };
 
 const App: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [photos, photosLoading] = usePhotos(selectedCustomer?.id ?? null);
+  const [photos, photosLoading, photosError] = usePhotos(selectedCustomer?.id ?? null);
 
   useEffect(() => {
     if (customers.length === 0) {
@@ -65,6 +67,7 @@ const App: React.FC = () => {
             customer={selectedCustomer} 
             photos={photos}
             loading={photosLoading}
+            error={photosError}
           />
         )}
       </div>
