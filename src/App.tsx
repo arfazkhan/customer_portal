@@ -30,21 +30,23 @@ const App: React.FC = () => {
   
 
   useEffect(() => {
-    const updatePhotos = async () => {
-      setLoading(true);
-      const newPhotos: CustomerPhotos = {};
-      for (const customer of customersRef.current) {
-        newPhotos[customer.id] = await fetchPhotosForCustomer(customer.id);
-      }
-      setCustomerPhotos(newPhotos);
-      setLoading(false);
-    };
-
-    updatePhotos();
-    const interval = setInterval(updatePhotos, 10000);
-
-    return () => clearInterval(interval);
-  }, []); // Empty dependency array
+    if (selectedCustomer) {
+      const updatePhotos = async () => {
+        setLoading(true);
+        const newPhotos = await fetchPhotosForCustomer(selectedCustomer.id);
+        setCustomerPhotos(prev => ({
+          ...prev,
+          [selectedCustomer.id]: newPhotos
+        }));
+        setLoading(false);
+      };
+  
+      updatePhotos();
+      const interval = setInterval(updatePhotos, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [selectedCustomer]); 
+  
 
   return (
     <div className="App">
