@@ -22,4 +22,11 @@
   .photo-grid img:hover {
     transform: scale(1.05);
   }
-  
+.photo-grid-error {
+  color: #c62828;
+  padding: 20px;
+  text-align: center;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin-top: 20px;
+}

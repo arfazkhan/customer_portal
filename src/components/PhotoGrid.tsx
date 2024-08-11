@@ -7,9 +7,14 @@ import './PhotoGrid.css';
 interface Props {
   photos: string[];
   loading: boolean;
+  error: string | null;
 }
 
-const PhotoGrid: React.FC<Props> = ({ photos, loading }) => {
+const PhotoGrid: React.FC<Props> = ({ photos, loading, error }) => {
+  if (error) {
+    return <div className="photo-grid-error">{error}</div>;
+  }
+
   return (
     <div className="photo-grid">
       {loading

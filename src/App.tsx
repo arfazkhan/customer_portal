@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomerList from './components/CustomerList';
 import CustomerDetails from './components/CustomerDetails';
 import { RootState, AppDispatch } from './store';
-import { fetchInitialCustomers, fetchMoreCustomers, selectCustomer } from './store/customerSlice';
+import { fetchInitialCustomers, fetchMoreCustomers, selectCustomer, clearError } from './store/customerSlice';
 import { usePhotos } from './hooks/usePhotos';
 import './App.css';
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { customers, selectedCustomerId, loading, hasNextPage } = useSelector((state: RootState) => state.customers);
+  const { customers, selectedCustomerId, loading, hasNextPage, error } = useSelector((state: RootState) => state.customers);
   const [listHeight, setListHeight] = useState(window.innerHeight);
   const [photos, photosLoading, photosError] = usePhotos(selectedCustomerId);
 
@@ -34,10 +34,20 @@ const App: React.FC = () => {
     dispatch(selectCustomer(customerId));
   };
 
+  const handleClearError = () => {
+    dispatch(clearError());
+  };
+
   const selectedCustomer = customers.find(c => c.id === selectedCustomerId);
 
   return (
     <div className="App">
+      {error && (
+        <div className="error-message">
+          {error}
+          <button onClick={handleClearError}>Dismiss</button>
+        </div>
+      )}
       <div className="customer-list-container">
         <CustomerList 
           customers={customers} 
