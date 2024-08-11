@@ -7,20 +7,30 @@ import { generateCustomers } from './utils/customerGenerator';
 import { usePhotos } from './hooks/usePhotos';
 import './App.css';
 
+const ITEMS_PER_PAGE = 20;
+
 const App: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [listHeight, setListHeight] = useState(window.innerHeight - 40);
+  const [listHeight, setListHeight] = useState(window.innerHeight);
   const [photos, photosLoading, photosError] = usePhotos(selectedCustomer?.id ?? null);
+  const [hasNextPage, setHasNextPage] = useState(true);
+
+  const loadMoreItems = useCallback((startIndex: number, stopIndex: number) => {
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        const newCustomers = generateCustomers(stopIndex - startIndex + 1);
+        setCustomers(prev => [...prev, ...newCustomers]);
+        if (customers.length + newCustomers.length >= 1000) {
+          setHasNextPage(false);
+        }
+        resolve();
+      }, 1000); // Simulate API delay
+    });
+  }, [customers.length]);
 
   useEffect(() => {
-    if (customers.length === 0) {
-      setCustomers(generateCustomers(1000));
-    }
-  }, [customers]);
-
-  useEffect(() => {
-    const handleResize = () => setListHeight(window.innerHeight - 40);
+    const handleResize = () => setListHeight(window.innerHeight);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -28,6 +38,8 @@ const App: React.FC = () => {
   const handleSelectCustomer = useCallback((customer: Customer) => {
     setSelectedCustomer(customer);
   }, []);
+
+  const isItemLoaded = useCallback((index: number) => index < customers.length, [customers.length]);
 
   return (
     <div className="App">
@@ -37,6 +49,10 @@ const App: React.FC = () => {
           onSelectCustomer={handleSelectCustomer} 
           selectedCustomerId={selectedCustomer?.id}
           height={listHeight}
+          isItemLoaded={isItemLoaded}
+          loadMoreItems={loadMoreItems}
+          hasNextPage={hasNextPage}
+          itemCount={hasNextPage ? customers.length + 1 : customers.length}
         />
       </div>
       <div className="customer-details-container">
