@@ -1,4 +1,25 @@
 /* src/components/CustomerDetails.css */
+.customer-details-container {
+  height: 100vh;
+  overflow-y: auto;
+  padding-right: 8px; 
+}
+.customer-details-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.customer-details-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.customer-details-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.customer-details-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 .customer-details {
     padding: 20px;
     background-color: #ffffff;

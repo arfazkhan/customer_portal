@@ -51,7 +51,7 @@ const CustomerList: React.FC<Props> = ({
         threshold={10}
       >
         {({ onItemsRendered, ref }) => (
-          <List
+          <List  className="customer-list"
             height={height}
             itemCount={itemCount}
             itemSize={100}

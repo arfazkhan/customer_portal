@@ -111,5 +111,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - [React Window](https://github.com/bvaughn/react-window) for efficient list virtualization
 - [Redux Toolkit](https://redux-toolkit.js.org/) for simplified Redux development
 - [Picsum Photos](https://picsum.photos/) for providing random photo URLs
-```
 

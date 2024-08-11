@@ -42,33 +42,36 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <h1 className="app-title">Customer Portal</h1>
       {error && (
         <div className="error-message">
           {error}
           <button onClick={handleClearError}>Dismiss</button>
         </div>
       )}
-      <div className="customer-list-container">
-        <CustomerList 
-          customers={customers} 
-          onSelectCustomer={handleSelectCustomer} 
-          selectedCustomerId={selectedCustomerId}
-          height={listHeight}
-          isItemLoaded={isItemLoaded}
-          loadMoreItems={loadMoreItems}
-          hasNextPage={hasNextPage}
-          itemCount={hasNextPage ? customers.length + 1 : customers.length}
-        />
-      </div>
-      <div className="customer-details-container">
-        {selectedCustomer && (
-          <CustomerDetails 
-            customer={selectedCustomer} 
-            photos={photos}
-            loading={photosLoading}
-            error={photosError}
+      <div className="app-content">
+        <div className="customer-list-container">
+          <CustomerList 
+            customers={customers} 
+            onSelectCustomer={handleSelectCustomer} 
+            selectedCustomerId={selectedCustomerId}
+            height={listHeight - 60} 
+            isItemLoaded={isItemLoaded}
+            loadMoreItems={loadMoreItems}
+            hasNextPage={hasNextPage}
+            itemCount={hasNextPage ? customers.length + 1 : customers.length}
           />
-        )}
+        </div>
+        <div className="customer-details-container">
+          {selectedCustomer && (
+            <CustomerDetails 
+              customer={selectedCustomer} 
+              photos={photos}
+              loading={photosLoading}
+              error={photosError}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

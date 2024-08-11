@@ -1,7 +1,28 @@
 /* src/components/CustomerList.css */
+
+.customer-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.customer-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.customer-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.customer-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 .customer-list {
     padding: 0;
     height: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+    overflow-y: auto;
   }
   
   .customer-card {

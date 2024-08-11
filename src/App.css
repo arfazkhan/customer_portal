@@ -1,13 +1,31 @@
 /* src/App.css */
+body {
+  overflow: hidden;
+}
+
 .App {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   font-family: 'Inter', sans-serif;
   background-color: #f9f9fb;
   color: #333;
   padding: 20px;
+  overflow: hidden;
+}
+.app-title {
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+ 
+  font-size: 24px;
 }
 
+.app-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
 .customer-list-container {
   width: 30%;
   background-color: #ffffff;
@@ -17,6 +35,7 @@
   height: 100%; 
   display: flex; 
   flex-direction: column; 
+  overflow: hidden;
 }
 
 .customer-details-container {
