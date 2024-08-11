@@ -8,7 +8,6 @@ A single-page React application that displays a customer details portal with eff
 - Display a list of customers with infinite scrolling
 - Show detailed customer information and photos
 - Optimized performance for handling up to 1000 customer entries
-- Responsive design
 - State management using Redux
 - Error handling and display
 - Dynamic photo loading with periodic updates
@@ -33,12 +32,12 @@ A single-page React application that displays a customer details portal with eff
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/customer-details-portal.git
+   git clone https://github.com/arfazkhan/customer_portal.git
    ```
 
 2. Navigate to the project directory:
    ```
-   cd customer-details-portal
+   cd customer_portal
    ```
 
 3. Install dependencies:
@@ -91,7 +90,7 @@ src/
 - Memoization of components to prevent unnecessary re-renders
 - Centralized state management with Redux
 - Error handling and user feedback
-- Responsive design for various screen sizes
+
 
 ## API Integration
 
