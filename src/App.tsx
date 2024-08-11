@@ -1,39 +1,22 @@
 // src/App.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import CustomerList from './components/CustomerList';
 import CustomerDetails from './components/CustomerDetails';
-import { Customer } from './types/Customer';
-import { generateCustomers } from './utils/customerGenerator';
+import { RootState, AppDispatch } from './store';
+import { fetchInitialCustomers, fetchMoreCustomers, selectCustomer } from './store/customerSlice';
 import { usePhotos } from './hooks/usePhotos';
 import './App.css';
 
-const INITIAL_LOAD_COUNT = 10;
-const ITEMS_PER_LOAD = 20;
-
 const App: React.FC = () => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const { customers, selectedCustomerId, loading, hasNextPage } = useSelector((state: RootState) => state.customers);
   const [listHeight, setListHeight] = useState(window.innerHeight);
-  const [photos, photosLoading, photosError] = usePhotos(selectedCustomer?.id ?? null);
-  const [hasNextPage, setHasNextPage] = useState(true);
+  const [photos, photosLoading, photosError] = usePhotos(selectedCustomerId);
 
   useEffect(() => {
-    // Load initial customers
-    setCustomers(generateCustomers(INITIAL_LOAD_COUNT));
-  }, []);
-
-  const loadMoreItems = useCallback((startIndex: number, stopIndex: number) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        const newCustomers = generateCustomers(ITEMS_PER_LOAD);
-        setCustomers(prev => [...prev, ...newCustomers]);
-        if (customers.length + newCustomers.length >= 1000) {
-          setHasNextPage(false);
-        }
-        resolve();
-      }, 1000); // Simulate API delay
-    });
-  }, [customers.length]);
+    dispatch(fetchInitialCustomers());
+  }, [dispatch]);
 
   useEffect(() => {
     const handleResize = () => setListHeight(window.innerHeight);
@@ -41,11 +24,17 @@ const App: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleSelectCustomer = useCallback((customer: Customer) => {
-    setSelectedCustomer(customer);
-  }, []);
+  const loadMoreItems = async (startIndex: number, stopIndex: number): Promise<void> => {
+    await dispatch(fetchMoreCustomers()).unwrap();
+  };
 
-  const isItemLoaded = useCallback((index: number) => index < customers.length, [customers.length]);
+  const isItemLoaded = (index: number) => index < customers.length;
+
+  const handleSelectCustomer = (customerId: number) => {
+    dispatch(selectCustomer(customerId));
+  };
+
+  const selectedCustomer = customers.find(c => c.id === selectedCustomerId);
 
   return (
     <div className="App">
@@ -53,7 +42,7 @@ const App: React.FC = () => {
         <CustomerList 
           customers={customers} 
           onSelectCustomer={handleSelectCustomer} 
-          selectedCustomerId={selectedCustomer?.id}
+          selectedCustomerId={selectedCustomerId}
           height={listHeight}
           isItemLoaded={isItemLoaded}
           loadMoreItems={loadMoreItems}

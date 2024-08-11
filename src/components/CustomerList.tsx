@@ -7,8 +7,8 @@ import { Customer } from '../types/Customer';
 
 interface Props {
   customers: Customer[];
-  onSelectCustomer: (customer: Customer) => void;
-  selectedCustomerId: number | undefined;
+  onSelectCustomer: (customerId: number) => void;
+  selectedCustomerId: number | null;
   height: number;
   isItemLoaded: (index: number) => boolean;
   loadMoreItems: (startIndex: number, stopIndex: number) => Promise<void>;
@@ -36,7 +36,7 @@ const CustomerList: React.FC<Props> = ({
         <CustomerCard 
           customer={customer}
           isSelected={customer.id === selectedCustomerId}
-          onClick={() => onSelectCustomer(customer)}
+          onClick={() => onSelectCustomer(customer.id)}
         />
       </div>
     );
@@ -48,13 +48,13 @@ const CustomerList: React.FC<Props> = ({
         isItemLoaded={isItemLoaded}
         itemCount={itemCount}
         loadMoreItems={loadMoreItems}
-        threshold={10} // Start loading more items when user is 10 items away from the end
+        threshold={10}
       >
         {({ onItemsRendered, ref }) => (
           <List
             height={height}
             itemCount={itemCount}
-            itemSize={100} // Adjust based on your CustomerCard height
+            itemSize={100}
             onItemsRendered={onItemsRendered}
             ref={ref}
             width="100%"
